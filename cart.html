@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #1e40af;
+      --background-color: #f8fafc;
+      --text-color: #1e293b;
+      --border-color: #e2e8f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .menu-icon {
+      position: fixed;
+      left: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1100;
+      color: var(--text-color);
+      padding: 0.5rem;
+      border-radius: 0.375rem;
+      transition: background-color 0.2s;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-left: 3.0rem;
+      color: var(--primary-color);
+    }
+
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: white;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+      transition: left 0.3s ease;
+      padding-top: 5rem;
+      z-index: 1050;
+    }
+
+    .nav-menu.active {
+      left: 0;
+    }
+
+    .nav-menu ul {
+      list-style: none;
+    }
+
+    .nav-menu li {
+      padding: 1rem 1.5rem;
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: 500;
+      transition: color 0.2s;
+      display: block;
+    }
+
+    .nav-menu a:hover {
+      color: var(--primary-color);
+    }
+
+    main {
+      margin-top: 5rem;
+      padding: 2rem;
+      flex-grow: 1;
+    }
+
+    #cart-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem;
+    }
+
+    .cart-card {
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      position: relative;
+    }
+
+    .cart-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 0.375rem;
+      margin-bottom: 1rem;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      width: 2rem;
+      height: 2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+    }
+
+    .remove-btn:hover {
+      background-color: #dc2626;
+    }
+
+    .cart-total {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    footer {
+      background-color: white;
+      padding: 1.5rem;
+      text-align: center;
+      color: #64748b;
+      border-top: 1px solid var(--border-color);
+      margin-top: auto;
+    }
+
+    .profile-picture {
+      width: 40px;
+      height: 40px;
+      border-radius: 100%;
+      object-fit: cover;
+      cursor: pointer;
+      margin-left: 20px;
+    }
+
+    .empty-cart {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+    }
+
+    .checkout-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .checkout-btn:hover {
+      background-color: var(--secondary-color);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="menu-icon">☰</div>
+    <h1>Shopping Cart</h1>
+    <div>
+      <a href="profile.html"><img src="pn.png" alt="Profile" class="profile-picture" id="profile-picture"></a>
+    </div>
+  </header>
+
+  <nav class="nav-menu">
+    <ul>
+      <li><a href="main.html">Home</a></li>
+      
+      <li><a href="index.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section id="cart">
+      <h2>Your Cart</h2>
+      <div id="cart-list">
+        <!-- Cart items will be dynamically loaded here -->
+      </div>
+      <div class="cart-total" id="cart-total">
+        <strong>Total:</strong> $0.00
+        <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Marketplace Inc. All rights reserved.</p>
+  </footer>    
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+    authDomain: "and-facebook-ab84c.firebaseapp.com",
+    databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+    projectId: "and-facebook-ab84c",
+    storageBucket: "and-facebook-ab84c.appspot.com",
+    messagingSenderId: "4885749329",
+    appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+// Helper function to check if an item is a marketplace item
+function isMarketplaceItem(itemId) {
+    return itemId.startsWith('item_');
+}
+
+// Modified function to move marketplace items after payment success
+async function moveMarketplaceItemsAfterPayment(userId, items) {
+    try {
+        const transferPromises = [];
+        
+        for (const item of items) {
+            if (isMarketplaceItem(item.id)) {
+                const marketplaceRef = ref(db, `marketplaceItems/${item.id}`);
+                const snapshot = await get(marketplaceRef);
+                
+                if (snapshot.exists()) {
+                    const itemData = snapshot.val();
+                    
+                    // Create entry in yourOrder
+                    const yourOrderRef = ref(db, `yourOrder/${userId}/${item.id}`);
+                    transferPromises.push(
+                        set(yourOrderRef, {
+                            ...itemData,
+                            transferredAt: Date.now(),
+                            status: 'Completed'
+                        }).then(() => remove(marketplaceRef))
+                    );
+                }
+            }
+        }
+        
+        if (transferPromises.length > 0) {
+            await Promise.all(transferPromises);
+        }
+        
+        return true;
+    } catch (error) {
+        console.error("Error moving marketplace items after payment:", error);
+        throw error;
+    }
+}
+
+// Modified checkout function to handle payment flow
+window.checkout = async function() {
+    try {
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        if (cartItems.length === 0) {
+            alert('Your cart is empty!');
+            return;
+        }
+
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Please log in to checkout');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // Store checkout data in session storage for payment processing
+        const total = cartItems.reduce((sum, item) => sum + parseFloat(item.price), 0);
+        const checkoutData = {
+            cartItems: cartItems,
+            total: total,
+            userId: user.uid,
+            timestamp: new Date().toISOString()
+        };
+        
+        sessionStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+        
+        // Create pending checkout record
+        const checkoutRef = ref(db, `pendingCheckouts/${user.uid}_${Date.now()}`);
+        await set(checkoutRef, checkoutData);
+
+        // Redirect to payment page
+        window.location.href = 'credit-card-payment.html';
+
+    } catch (error) {
+        console.error('Checkout error:', error);
+        alert('An error occurred during checkout. Please try again.');
+    }
+};
+
+// New function to handle successful payment
+async function handlePaymentSuccess(paymentDetails) {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            throw new Error('User not authenticated');
+        }
+
+        const checkoutData = JSON.parse(sessionStorage.getItem('checkoutData'));
+        if (!checkoutData) {
+            throw new Error('Checkout data not found');
+        }
+
+        // Move marketplace items only after successful payment
+        await moveMarketplaceItemsAfterPayment(user.uid, checkoutData.cartItems);
+
+        // Handle make-to-order items
+        const makeToOrderItems = await getMakeToOrderItems(user.uid);
+        for (const item of checkoutData.cartItems) {
+            if (makeToOrderItems[item.id]) {
+                await removeFromMakeToOrder(user.uid, item.id);
+            }
+        }
+
+        // Record successful checkout
+        const checkoutRef = ref(db, `completedCheckouts/${user.uid}_${Date.now()}`);
+        await set(checkoutRef, {
+            ...checkoutData,
+            paymentDetails,
+            completedAt: new Date().toISOString()
+        });
+
+        // Clear cart data
+        await clearCartData();
+
+        // Remove pending checkout
+        const pendingCheckoutRef = ref(db, `pendingCheckouts/${user.uid}_${checkoutData.timestamp}`);
+        await remove(pendingCheckoutRef);
+
+        return true;
+    } catch (error) {
+        console.error('Payment success handling error:', error);
+        throw error;
+    }
+}
+
+// Function to clear cart data
+async function clearCartData() {
+    localStorage.removeItem('cart');
+    localStorage.removeItem('cartItems');
+    localStorage.setItem('cartCount', '0');
+    
+    const user = auth.currentUser;
+    if (user) {
+        const cartRef = ref(db, `carts/${user.uid}`);
+        await remove(cartRef);
+    }
+}
+
+async function fetchProfilePicture(userId) {
+    try {
+        const userRef = ref(db, `users/${userId}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            const profileImg = document.querySelector('.profile-picture');
+            if (profileImg && userData.profilePicture) {
+                profileImg.src = userData.profilePicture;
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching profile picture:", error);
+    }
+}
+
+async function getMakeToOrderItems(userId) {
+    try {
+        const makeToOrderRef = ref(db, `makeToOrder/${userId}`);
+        const snapshot = await get(makeToOrderRef);
+        return snapshot.exists() ? snapshot.val() : {};
+    } catch (error) {
+        console.error("Error fetching make to order items:", error);
+        return {};
+    }
+}
+
+async function removeFromMakeToOrder(userId, itemId) {
+    try {
+        const makeToOrderRef = ref(db, `makeToOrder/${userId}/${itemId}`);
+        const snapshot = await get(makeToOrderRef);
+        
+        if (snapshot.exists()) {
+            const itemData = snapshot.val();
+            // Store the item data before removing it (optional, for recovery purposes)
+            const removedItemsRef = ref(db, `removedMakeToOrder/${userId}/${itemId}`);
+            await set(removedItemsRef, {
+                ...itemData,
+                removedAt: new Date().toISOString()
+            });
+            
+            // Remove the item from make to order
+            await remove(makeToOrderRef);
+            console.log(`Item ${itemId} removed from make to order successfully`);
+            return true;
+        } else {
+            console.log(`Item ${itemId} not found in make to order`);
+            return false;
+        }
+    } catch (error) {
+        console.error("Error removing item from make to order:", error);
+        throw error;
+    }
+}
+
+async function saveCartToFirebase(userId, cartData) {
+    try {
+        const cartRef = ref(db, `carts/${userId}`);
+        await set(cartRef, {
+            items: cartData.items,
+            total: cartData.total,
+            lastUpdated: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error("Error saving cart to Firebase:", error);
+    }
+}
+
+async function displayCart() {
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const cartList = document.getElementById('cart-list');
+    const cartTotal = document.getElementById('cart-total');
+    
+    if (cartItems.length === 0) {
+        cartList.innerHTML = '<div class="empty-cart"><p>Your cart is empty</p></div>';
+        cartTotal.innerHTML = `
+            <strong>Total:</strong> $0.00
+            <button class="checkout-btn" onclick="checkout()" disabled>Proceed to Checkout</button>
+        `;
+        return;
+    }
+
+    let total = 0;
+    let cartHTML = '';
+
+    // Check which items are in make-to-order
+    const user = auth.currentUser;
+    let makeToOrderItems = {};
+    if (user) {
+        makeToOrderItems = await getMakeToOrderItems(user.uid);
+    }
+
+    for (let i = 0; i < cartItems.length; i++) {
+        const item = cartItems[i];
+        const isMakeToOrder = makeToOrderItems[item.id];
+        cartHTML += `
+            <div class="cart-card ${isMakeToOrder ? 'make-to-order' : ''}">
+                <img src="${item.image}" alt="${item.name}">
+                <button class="remove-btn" onclick="removeItem(${i}, '${item.id}')">×</button>
+                <h3>${item.name}</h3>
+                <p><strong>Price:</strong> $${item.price}</p>
+                ${isMakeToOrder ? '<span class="make-to-order-badge">Made to Order</span>' : ''}
+            </div>
+        `;
+        total += parseFloat(item.price);
+    }
+
+    cartList.innerHTML = cartHTML;
+    cartTotal.innerHTML = `
+        <strong>Total:</strong> $${total.toFixed(2)}
+        <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+    `;
+
+    localStorage.setItem('cart', JSON.stringify({
+        items: cartItems,
+        total: total
+    }));
+}
+
+function initialize() {
+    const menuIcon = document.querySelector('.menu-icon');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    menuIcon?.addEventListener('click', () => {
+        navMenu?.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (event) => {
+        if (navMenu && !navMenu.contains(event.target) && !menuIcon?.contains(event.target)) {
+            navMenu.classList.remove('active');
+        }
+    });
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            fetchProfilePicture(user.uid);
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
+
+    displayCart();
+}
+
+window.removeItem = async function(index, itemId) {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            alert("Please log in to remove items");
+            return;
+        }
+
+        if (itemId) {
+            // First check if item is in make-to-order and remove it
+            const makeToOrderItems = await getMakeToOrderItems(user.uid);
+            if (makeToOrderItems[itemId]) {
+                const removed = await removeFromMakeToOrder(user.uid, itemId);
+                if (!removed) {
+                    console.log("Item not found in make-to-order, proceeding with cart removal");
+                }
+            }
+        }
+
+        // Proceed with cart removal only after make-to-order is handled
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        cartItems.splice(index, 1);
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        
+        // Update cart count
+        let cartCount = parseInt(localStorage.getItem('cartCount')) || 0;
+        cartCount = Math.max(0, cartCount - 1);
+        localStorage.setItem('cartCount', cartCount);
+        
+        // Update cart in Firebase
+        await saveCartToFirebase(user.uid, {
+            items: cartItems,
+            total: cartItems.reduce((sum, item) => sum + parseFloat(item.price), 0)
+        });
+        
+        // Refresh the cart display
+        await displayCart();
+        
+    } catch (error) {
+        console.error("Error removing item:", error);
+        alert("There was an error removing the item. Please try again.");
+    }
+};
+
+document.addEventListener('DOMContentLoaded', initialize);
+</script>
+</body>
+</html>

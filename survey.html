@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Animal Survey</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .progress-bar {
+            transition: width 0.3s ease-in-out;
+        }
+        
+        .form-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-in-out;
+        }
+        
+        .form-section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .custom-shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-field {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            width: 100%;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+            transition: transform 0.2s ease;
+        }
+
+        .button-primary:hover {
+            transform: translateY(-1px);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    <span class="ml-2 text-xl font-bold text-gray-900">Air Animal</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-gray-900">Help</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-900">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900">Pet Care Survey</h1>
+                    <p class="mt-2 text-gray-600">Help us improve our services by sharing your experience</p>
+                </div>
+
+                <div class="mb-8 relative">
+                    <div class="h-2 bg-gray-200 rounded-full">
+                        <div class="progress-bar h-2 bg-indigo-600 rounded-full" style="width: 0%"></div>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-600 text-right">
+                        <span id="progress-text">Step 1 of 4</span>
+                    </div>
+                </div>
+
+                <form id="survey-form" class="space-y-6">
+                    <div class="form-section active" data-step="1">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Personal Information</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <input type="text" class="input-field mt-1" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Email Address</label>
+                                <input type="email" class="input-field mt-1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section hidden" data-step="2">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Pet Ownership</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Do you currently own a pet?</label>
+                                <select class="input-field mt-1">
+                                    <option value="">Please select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                    <option value="planning">Planning to get one</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">What type of pets do you have?</label>
+                                <div class="mt-2 space-y-2">
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" class="form-checkbox text-indigo-600">
+                                        <span class="ml-2">Dog</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" class="form-checkbox text-indigo-600">
+                                        <span class="ml-2">Cat</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" class="form-checkbox text-indigo-600">
+                                        <span class="ml-2">Other</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section hidden" data-step="3">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Shopping Preferences</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">How often do you purchase pet supplies?</label>
+                                <select class="input-field mt-1">
+                                    <option value="">Please select</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Every 3 months</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Preferred shopping method</label>
+                                <div class="mt-2 space-y-2">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="shopping-method" class="form-radio text-indigo-600">
+                                        <span class="ml-2">Online</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="shopping-method" class="form-radio text-indigo-600">
+                                        <span class="ml-2">In-store</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="shopping-method" class="form-radio text-indigo-600">
+                                        <span class="ml-2">Both</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section hidden" data-step="4">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Additional Feedback</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">What features would you like to see in our services?</label>
+                                <textarea class="input-field mt-1" rows="4"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">How satisfied are you with our current services?</label>
+                                <div class="flex items-center space-x-2 mt-2">
+                                    <span class="text-gray-400">Not satisfied</span>
+                                    <input type="range" min="1" max="5" class="w-full">
+                                    <span class="text-gray-400">Very satisfied</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between pt-4">
+                        <button type="button" id="prev-btn" class="hidden px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            Previous
+                        </button>
+                        <button type="button" id="next-btn" class="button-primary px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white">
+                            Next
+                        </button>
+                        <button type="submit" id="submit-btn" class="hidden button-primary px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+  authDomain: "and-facebook-ab84c.firebaseapp.com",
+  databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+  projectId: "and-facebook-ab84c",
+  storageBucket: "and-facebook-ab84c.appspot.com",
+  messagingSenderId: "4885749329",
+  appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+};
+
+// Initialize Firebase properly
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+document.addEventListener('DOMContentLoaded', function() {
+    let currentStep = 1;
+    const totalSteps = 4;
+    const form = document.getElementById('survey-form');
+    const nextBtn = document.getElementById('next-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const progressBar = document.querySelector('.progress-bar');
+    const progressText = document.getElementById('progress-text');
+
+    // Validate that all required elements exist
+    if (!form || !nextBtn || !prevBtn || !submitBtn || !progressBar || !progressText) {
+        console.error('Required elements not found');
+        return;
+    }
+
+    function updateProgress() {
+        const progress = ((currentStep - 1) / totalSteps) * 100;
+        progressBar.style.width = `${progress}%`;
+        progressText.textContent = `Step ${currentStep} of ${totalSteps}`;
+    }
+
+    function showStep(step) {
+        const formSections = document.querySelectorAll('.form-section');
+        formSections.forEach(section => {
+            section.classList.remove('active');
+            section.classList.add('hidden');
+        });
+        
+        const currentSection = document.querySelector(`[data-step="${step}"]`);
+        if (!currentSection) {
+            console.error(`Section with data-step="${step}" not found`);
+            return;
+        }
+
+        currentSection.classList.remove('hidden');
+        currentSection.classList.add('active');
+
+        prevBtn.classList.toggle('hidden', step === 1);
+        nextBtn.classList.toggle('hidden', step === totalSteps);
+        submitBtn.classList.toggle('hidden', step !== totalSteps);
+
+        updateProgress();
+    }
+
+    function validateCurrentStep() {
+        const currentSection = document.querySelector(`[data-step="${currentStep}"]`);
+        if (!currentSection) return false;
+
+        const requiredInputs = currentSection.querySelectorAll('[required]');
+        return Array.from(requiredInputs).every(input => input.value.trim() !== '');
+    }
+
+    function collectFormData() {
+        try {
+            return {
+                personalInfo: {
+                    name: document.querySelector('input[name="name"]')?.value || '',
+                    email: document.querySelector('input[name="email"]')?.value || ''
+                },
+                petOwnership: {
+                    hasPet: document.querySelector('select[name="has-pet"]')?.value || '',
+                    petTypes: Array.from(document.querySelectorAll('input[name="pet-type"]:checked'))
+                        .map(cb => cb.nextElementSibling?.textContent?.trim() || '')
+                },
+                shoppingPreferences: {
+                    frequency: document.querySelector('select[name="shopping-frequency"]')?.value || '',
+                    method: document.querySelector('input[name="shopping-method"]:checked')?.value || ''
+                },
+                feedback: {
+                    features: document.querySelector('textarea[name="features"]')?.value || '',
+                    satisfaction: document.querySelector('input[name="satisfaction"]')?.value || ''
+                },
+                timestamp: new Date().toISOString()
+            };
+        } catch (error) {
+            console.error('Error collecting form data:', error);
+            throw error;
+        }
+    }
+
+    async function saveToFirebase(data) {
+        try {
+            const surveysRef = ref(db, 'surveys');
+            await push(surveysRef, data);
+            return true;
+        } catch (error) {
+            console.error('Error saving to Firebase:', error);
+            return false;
+        }
+    }
+
+    nextBtn.addEventListener('click', () => {
+        if (validateCurrentStep() && currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+        } else if (!validateCurrentStep()) {
+            alert('Please fill in all required fields before proceeding.');
+        }
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!validateCurrentStep()) {
+            alert('Please fill in all required fields before submitting.');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        
+        try {
+            const formData = collectFormData();
+            const saved = await saveToFirebase(formData);
+            
+            if (saved) {
+                sessionStorage.setItem('surveyCompleted', 'true');
+                alert('Thank you for completing the survey!');
+                window.location.href = 'yourorder.html';
+            } else {
+                throw new Error('Failed to save data');
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert('There was an error submitting your survey. Please try again.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit';
+        }
+    });
+
+    // Initialize first step
+    showStep(1);
+});
+    </script>
+</body>
+</html>

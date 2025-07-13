@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Animal since 1977</title>
+    <style>
+        /* Classic & Professional Styling */
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 20px;
+  background-color: #3568a7;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+  color: #fff;
+}
+
+.header-h1 {
+  font-size: 25px;
+  margin-left:90px;
+  color: #fff;
+}
+
+/* Menu Icon */
+.menu-icon {
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Navigation Menu */
+.nav-menu {
+  display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  background-color: #f8f9fa;
+  width: 100%;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 1000;
+}
+
+.nav-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.nav-menu li {
+  margin: 10px 0;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: #333;
+}
+
+/* Cart Icon */
+.cart-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cart-icon .icon {
+  width: 24px;
+  height: 24px;
+  color: #333;
+}
+
+.cart-icon .cart-count {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background-color: #ff5733;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 50%;
+}
+/* Menu Icon */
+.menu-icon {
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
+  position: absolute;
+  left: 30px; /* Position from the left edge */
+  top: 24px; /* Adjust from the top */
+  z-index: 1100;
+}
+
+/* Navigation Menu */
+.nav-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 80%; /* Adjust width */
+  max-width: 200px; /* Limit maximum width */
+  height: 100%; /* Full height */
+  background-color: rgba(255, 255, 255, 0.95); /* Light background */
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  text-align: left; /* Align content to the left */
+  padding: 40px 20px; /* Add space inside: 40px top/bottom, 20px left/right */
+}
+
+.nav-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu li {
+  margin: 20px 0; /* Space between list items */
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  padding-left: 10px; /* Small indent for list items */
+}
+
+.nav-menu a:hover {
+  color: #007bff;
+}
+.auth-links .login {
+  background-color: #007BFF;
+  color: #fff;
+  border-color: #007BFF;
+  color: #fff;
+  text-decoration: none;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+.auth-links .login:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+        .container {
+            max-width: 1100px; 
+            margin: 0 auto;
+            padding: 2rem 1.5rem; 
+            background-image: url('');
+        }
+        h1, h2, h3 {
+            font-weight: 600; 
+            color: #222;
+        }
+        h1 {
+            font-size: 2.5rem; 
+            margin-bottom: 1.5rem;
+        }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        .hero {
+            background-color: #f8f8f8;
+            padding: 4rem 0; 
+            text-align: center;
+            max-width: 1100px; 
+            margin: 0 auto;
+            padding: 2rem 1.5rem; 
+            background-image: url('header.png');
+            background-size:cover;
+            background-repeat: no-repeat;
+        }
+        .hero p {
+            padding-top: 50px;
+        }
+        .portfolio {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        .portfolio img {
+            margin: 1rem; 
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); 
+            border-radius: 5px;
+            transition: transform 0.3s ease; 
+        }
+        .portfolio img:hover {
+            transform: scale(1.05); 
+        }
+        .process {
+            background-color: #f4f4f4;
+            padding: 3rem 0;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: #0056b3; /* Classic blue */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease; 
+        }
+        .cta-button:hover {
+            background-color: #004080; 
+        }
+        footer {
+            text-align: center;
+            padding: 1.5rem 0;
+            background-color: #333;
+            color: white;
+        }
+        footer a {
+            color: lightblue;
+            text-decoration: none;
+        }
+        .industry{
+            margin-right:30px;
+        }
+    </style>
+</head>
+<body>
+       <header>
+  <h1 class="header-h1">Air Animal</h1>  
+  <!-- Navigation Menu -->
+  <nav id="nav-menu" class="nav-menu">
+    <ul>
+        <li><a href="login.html"></a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">login</a></li>
+      <li><a href="#">Marketplace</a></li>
+    </ul>
+  </nav>
+</header>
+    <section class="hero">
+        <div class="hero">
+            <h1>                     </h1>
+            <p>We move and get the best and <br>suitable delivery for your loving friend.</p>
+            <a href="login.html" class="cta-button">Get Started</a>
+        </div>
+    </section>
+
+    <section class="portfolio">
+        <div class="container">
+            <h2>Our Work Speaks </h2>
+            <div>
+                <img src="wspace.jpg" alt="Logo Example 1" width="250">
+            </div>
+            <div>
+            <img src="wspace1.jpg" alt="Logo Example 1" width="290">         
+            </div>
+            <div><img src="wspace2.jpg" alt="Logo Example 1" width="290"></div>
+        </div>
+        <div><img src="wspace3.jpg" alt="Logo Example 1" width="280"></div>
+    </section>
+
+    <section class="process">
+        <div class="container">
+            <h2>More Than Just Dogs sellers</h2>
+            <p>With over 50,000 dog sold and 125,000 pets reunited to their families worldwide, Air Animal’s team of expert move managers ensures your pet’s international journey is safe and seamless. We proudly serve major corporations, relocation management firms, household goods movers, families, and U.S. military and government transferees. As an appointed and endorsed IATA air cargo sales agency, we work with all airlines that transport animals. Air Animal is also an Indirect Air Carrier, approved by the U.S. Transportation Security Administration for the secure pickup and delivery of live animals.</p>
+        </div>
+    </section>
+
+    <section class="call-to-action">
+        <div class="container">
+ <h2>Ready to Transform Your love?</h2>
+            <a href="#" class="cta-button">Get you new Best friend now</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>2025 &copy; Air Animals- Contact: airanimalpetmoveer@gmail.com - Follow us on <a href="#">Social Media</a></p>
+        </div>
+    </footer>
+</body>
+</html>

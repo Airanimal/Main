@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History | Digital Market</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #f3f4f6;
+            --text-color: #333;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --hover-color: #f9fafb;
+            --delete-color: #dc2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9fafb;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .orders-container {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 14.9rem;
+            right: 0.1rem;
+            background-color: var(--delete-color);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .delete-button:hover {
+            opacity: 0.9;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .order-date {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-delivered {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-successful {
+            background-color: #fff7ed;
+            color: #9a3412;
+        }
+
+        .order-content {
+            padding: 1rem;
+        }
+
+        .order-items {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .item-card {
+            display: flex;
+            gap: 1rem;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 0.25rem;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-price {
+            color: #666;
+            font-size: 0.875rem;
+        }
+
+        .order-summary {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .action-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .primary-button {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .secondary-button {
+            background-color: white;
+            border: 1px solid var(--border-color);
+        }
+
+        .action-button:hover {
+            opacity: 0.9;
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-orders i {
+            font-size: 3rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .item-card {
+                flex-direction: column;
+            }
+
+            .item-image {
+                width: 100%;
+                height: 200px;
+            }
+        }    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="page-header">
+            <h1 class="page-title">payment History</h1>
+            <div class="header-actions">
+                <button class="action-button secondary-button" onclick="window.location.href='main.html'">
+                    <i class="fas fa-arrow-left"></i> Back to Shop
+                </button>
+            </div>
+        </header>
+
+        <main id="ordersContainer" class="orders-container">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Loading orders...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Delete</h2>
+            <p>Are you sure you want to delete this order? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="action-button secondary-button" onclick="closeDeleteModal()">Cancel</button>
+                <button class="action-button primary-button" style="background-color: var(--delete-color);" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+    authDomain: "and-facebook-ab84c.firebaseapp.com",
+    databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+    projectId: "and-facebook-ab84c",
+    storageBucket: "and-facebook-ab84c.appspot.com",
+    messagingSenderId: "4885749329",
+    appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let orderToDelete = null;
+
+window.openDeleteModal = (orderId) => {
+    orderToDelete = orderId;
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = 'flex';
+};
+
+window.closeDeleteModal = () => {
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = 'none';
+    orderToDelete = null;
+};
+
+window.confirmDelete = async () => {
+    if (!orderToDelete) return;
+
+    try {
+        const orderId = orderToDelete;
+        await remove(ref(db, `payments/${orderId}`));
+        
+        const localOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+        const updatedOrders = localOrders.filter(order => order.id !== orderId);
+        localStorage.setItem('orders', JSON.stringify(updatedOrders));
+
+        location.reload();
+    } catch (error) {
+        console.error('Error deleting order:', error);
+        alert('Failed to delete order. Please try again.');
+    } finally {
+        closeDeleteModal();
+    }
+};
+
+async function fetchProductDetails(productId) {
+    try {
+        const productRef = ref(db, `products/${productId}`);
+        const snapshot = await get(productRef);
+        
+        if (snapshot.exists()) {
+            const product = snapshot.val();
+            return {
+                name: product.name || 'Unknown Product',
+                image: product.image || '/placeholder-image.jpg',
+                price: product.price || 0
+            };
+        }
+        return null;
+    } catch (error) {
+        console.error(`Error fetching product details for ${productId}:`, error);
+        return null;
+    }
+}
+
+async function fetchFirebaseOrders() {
+    try {
+        const paymentsRef = ref(db, 'payments');
+        const snapshot = await get(paymentsRef);
+        let orders = [];
+
+        if (snapshot.exists()) {
+            const payments = snapshot.val();
+            const orderPromises = Object.entries(payments)
+                .filter(([_, payment]) => payment.status === 'success')
+                .map(async ([key, payment]) => {
+                    // Fetch product details for each item in cartItems
+                    const cartItemsPromises = Object.entries(payment.cartItems || {}).map(async ([itemId, item]) => {
+                        const productDetails = await fetchProductDetails(item.productId || itemId);
+                        return {
+                            ...item,
+                            name: productDetails?.name || 'Product',
+                            image: productDetails?.image || '/placeholder-image.jpg',
+                            price: productDetails?.price || item.price || 0
+                        };
+                    });
+
+                    const resolvedCartItems = await Promise.all(cartItemsPromises);
+
+                    return {
+                        id: key,
+                        orderNumber: `ORD-${payment.timestamp.toString().slice(-6)}`,
+                        timestamp: payment.timestamp,
+                        status: 'processing',
+                        customerName: payment.cardHolder,
+                        total: payment.amount,
+                        cartItems: resolvedCartItems,
+                        paymentDetails: {
+                            lastFourDigits: payment.lastFourDigits,
+                            paymentMethod: 'Credit Card'
+                        },
+                        orderDate: new Date(payment.timestamp).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })
+                    };
+                });
+
+            orders = await Promise.all(orderPromises);
+        }
+
+        return orders;
+    } catch (error) {
+        console.error('Error fetching Firebase orders:', error);
+        return [];
+    }
+}
+
+function getLocalStorageOrders() {
+    try {
+        return JSON.parse(localStorage.getItem('orders') || '[]');
+    } catch (error) {
+        console.error('Error fetching localStorage orders:', error);
+        return [];
+    }
+}
+
+async function fetchAllOrders() {
+    const [firebaseOrders, localOrders] = await Promise.all([
+        fetchFirebaseOrders(),
+        getLocalStorageOrders()
+    ]);
+
+    const allOrders = [...firebaseOrders, ...localOrders]
+        .sort((a, b) => {
+            const timestampA = a.timestamp || new Date(a.orderDate).getTime();
+            const timestampB = b.timestamp || new Date(b.orderDate).getTime();
+            return timestampB - timestampA;
+        });
+
+    const uniqueOrders = Array.from(
+        new Map(allOrders.map(order => [order.id || order.orderNumber, order])).values()
+    );
+
+    return uniqueOrders;
+}
+
+function getStatusBadge(status) {
+    const statusClasses = {
+        'delivered': 'status-delivered',
+        'processing': 'status-successful'
+    };
+
+    return `<span class="order-status ${statusClasses[status.toLowerCase()] || ''}">${status}</span>`;
+}
+
+function createOrderCard(order) {
+    const cartItems = Array.isArray(order.cartItems) ? order.cartItems : 
+                    (order.cartItems ? Object.values(order.cartItems) : []);
+
+    return `
+        <div class="order-card">
+            <button class="delete-button" onclick="openDeleteModal('${order.id}')">
+                <i class="fas fa-trash"></i> Delete
+            </button>
+            <div class="order-header">
+                <div>
+                    <h3>${order.orderNumber || order.id}</h3>
+                    <span class="order-date">${order.orderDate}</span>
+                </div>
+                ${getStatusBadge(order.status || 'successful')}
+            </div>
+            <div class="order-content">
+                <div class="order-items">
+                    ${cartItems.map(item => `
+                        <div class="item-card">
+                            <img src="${item.image}" alt="${item.name}" class="item-image">
+                            <div class="item-details">
+                                <h4 class="item-name">${item.name}</h4>
+                                <p class="item-price">$${(item.price || 0).toFixed(2)}</p>
+                                ${item.quantity ? `<p class="item-quantity">Quantity: ${item.quantity}</p>` : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="order-summary">
+                    <div class="summary-details">
+                        <p><strong>name:</strong> ${order.customerName || 'N/A'}</p>
+                        <p><strong>paid with:</strong> card</p>
+                    </div>
+                    <div class="total-amount">
+                        <span>Amount you paid</span>
+                        <strong>$${(order.total || 0).toFixed(2)}</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="order-actions">
+                <button class="action-button primary-button" onclick="window.location.href='yourorder.html?id=${order.id || order.orderNumber}'">
+                    Track Order
+                </button>
+                <button class="action-button secondary-button" onclick="window.location.href='support.html?order=${order.id || order.orderNumber}'">
+                    Need Help?
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function displayOrders(orders) {
+    const container = document.getElementById('ordersContainer');
+    
+    if (orders.length === 0) {
+        container.innerHTML = `
+            <div class="empty-orders">
+                <i class="fas fa-shopping-bag"></i>
+                <h2>No payment Yet</h2>
+                <p>When you make a payment, it will appear here</p>
+                <button class="action-button primary-button" onclick="window.location.href='main.html'" style="margin-top: 1rem;">
+                    Start Shopping
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = orders.map(order => createOrderCard(order)).join('');
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const orders = await fetchAllOrders();
+        displayOrders(orders);
+    } catch (error) {
+        console.error('Error initializing page:', error);
+        displayOrders([]);
+    }
+})
+</script>
+</body>
+</html>

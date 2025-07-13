@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+<style>
+:root {
+  --primary-color: #2563eb;
+  --secondary-color: #1e40af;
+  --background-color: #f8fafc;
+  --text-color: #1e293b;
+  --border-color: #e2e8f0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-right: 3.0rem;
+  color: var(--primary-color);
+}
+
+.profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-left: 3.0rem;
+  color: var(--primary-color);
+}
+
+.menu-icon {
+      position: fixed;
+      left: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1100;
+      color: var(--text-color);
+      padding: 0.5rem;
+      border-radius: 0.375rem;
+      transition: background-color 0.2s;
+    }
+
+    .menu-icon:hover {
+      background-color: var(--border-color);
+    }
+
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: white;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+      transition: left 0.3s ease;
+      padding-top: 5rem;
+      z-index: 1050;
+    }
+
+    .nav-menu.active {
+      left: 0;
+    }
+
+    .nav-menu ul {
+      list-style: none;
+    }
+
+    .nav-menu li {
+      padding: 1rem 1.5rem;
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: 500;
+      transition: color 0.2s;
+      display: block;
+    }
+
+    .nav-menu a:hover {
+      color: var(--primary-color);
+    }
+
+    main {
+      margin-top: 5rem;
+      padding: 2rem;
+      flex-grow: 1;
+    }
+
+    .most-viewed-section {
+      margin-bottom: 3rem;
+    }
+
+    .carousel {
+      margin: 0 -1rem;
+    }
+
+    .carousel-item {
+      padding: 1rem;
+    }
+
+    .item-card {
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+
+    .item-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .item-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .item-card-content {
+      padding: 1rem;
+    }
+
+    .item-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .item-card p {
+      color: #64748b;
+      margin-bottom: 1rem;
+    }
+
+    .view-count {
+      font-size: 0.875rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .add-to-cart-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.2s;
+    }
+
+    .add-to-cart-btn:hover {
+      background-color: var(--secondary-color);
+    }
+
+    footer {
+      background-color: white;
+      padding: 1.5rem;
+      text-align: center;
+      color: #64748b;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .cart-icon {
+      position: relative;
+      padding: 0.5rem;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -0.25rem;
+      right: -0.25rem;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 999px;
+      min-width: 1.5rem;
+      text-align: center;
+    }
+
+.item-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Add styles for preventing button click propagation */
+.add-to-cart-btn {
+  position: relative;
+  z-index: 2;
+}
+
+ button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #f1f1f1 color: #666;
+    }
+
+/* Add pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.pagination button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  background-color: white;
+  color: var(--text-color);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination button:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.pagination button.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.pagination button:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+/* Grid layout for items */
+#item-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideOut {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+</style>
+</head>
+<body>
+<header>
+    <div class="menu-icon">☰</div>
+    <div class="profile-section">
+      
+    </div>
+    <h1>Pupiverse</h1>
+    <a href="profile.html"><img src="pn.png" alt="Profile" class="profile-picture" id="profile-picture"></a> 
+    <a href="cart.html" class="cart-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      <span class="cart-count">0</span>
+    </a>
+</header>
+
+  <nav class="nav-menu">
+    <ul>  
+      <li><a href="cart.html">Cart</a></li>
+      <li><a href="profile.html">profile</a></li>
+      <li><a href="index.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>   
+      <li><a href="yourorder.html">orders</a></li> 
+      <li><a href="order.html">payments</a></li> 
+    </ul>
+  </nav>
+
+<main>
+  <section class="most-viewed-section">
+    <h2>Most Viewed</h2>
+    <div class="carousel" id="most-viewed-carousel"></div>
+  </section>
+
+  <section id="browse-items">
+    <h2>Browse</h2>
+    <div id="item-list"></div>
+  </section>
+</main>
+
+<footer>
+    <p>© 2025 Marketplace Inc. All rights reserved.</p>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, onValue, update, increment, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+      authDomain: "and-facebook-ab84c.firebaseapp.com",
+      databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+      projectId: "and-facebook-ab84c",
+      storageBucket: "and-facebook-ab84c.appspot.com",
+      messagingSenderId: "4885749329",
+      appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Pagination state
+    let currentPage = 1;
+    const itemsPerPage = 12;
+    let allItems = [];
+
+    // Function to fetch profile picture
+    async function fetchProfilePicture(userId) {
+      try {
+        const userRef = ref(db, `users/${userId}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          const profileImg = document.querySelector('.profile-picture');
+          if (profileImg && userData.profilePicture) {
+            profileImg.src = userData.profilePicture;
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching profile picture:", error);
+      }
+    }
+
+    // Function to fetch and display most viewed items
+    function fetchMostViewedItems() {
+      const itemsRef = ref(db, "marketplaceItems");
+      onValue(itemsRef, (snapshot) => {
+        const items = snapshot.val();
+        if (!items) return;
+
+        const sortedItems = Object.entries(items)
+          .sort(([, a], [, b]) => (b.views || 0) - (a.views || 0))
+          .slice(0, 10);
+
+        const carousel = document.getElementById("most-viewed-carousel");
+        carousel.innerHTML = sortedItems.map(([key, item]) => `
+          <div class="carousel-item">
+            <div class="item-card" onclick="handleItemClick('${key}', event)">
+              <img src="${item.images[0]}" alt="${item.name}">
+              <div class="item-card-content">
+                <h3>${item.name}</h3>
+                <p>$${item.price}</p>
+                <div class="view-count">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  ${item.views || 0} views
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('${key}', event)">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+        `).join("");
+
+        // Initialize carousel
+        $('.carousel').slick({
+          dots: true,
+          infinite: true,
+          speed: 300,
+          slidesToShow: 4,
+          slidesToScroll: 1,
+          responsive: [
+            {
+              breakpoint: 1024,
+              settings: {
+                slidesToShow: 3,
+                slidesToScroll: 1
+              }
+            },
+            {
+              breakpoint: 768,
+              settings: {
+                slidesToShow: 2,
+                slidesToScroll: 1
+              }
+            },
+            {
+              breakpoint: 480,
+              settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1
+              }
+            }
+          ]
+        });
+      });
+    }
+
+    // Function to display items with pagination
+    function displayItems(items, page) {
+      const startIndex = (page - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedItems = items.slice(startIndex, endIndex);
+      
+      const itemList = document.getElementById("item-list");
+      itemList.innerHTML = paginatedItems.map(([key, item]) => `
+        <div class="item-card" onclick="handleItemClick('${key}', event)">
+          <img src="${item.images[0]}" alt="${item.name}">
+          <div class="item-card-content">
+            <h3>${item.name}</h3>
+            <p>$${item.price}</p>
+            <div class="view-count">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              ${item.views || 0} views
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart('${key}', event)">Add to Cart</button>
+          </div>
+        </div>
+      `).join("");
+
+      updatePagination(items.length);
+    }
+
+    // Function to update pagination controls
+    function updatePagination(totalItems) {
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      const pagination = document.createElement('div');
+      pagination.className = 'pagination';
+      
+      pagination.innerHTML = `
+        <button ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+          Previous
+        </button>
+        ${Array.from({ length: totalPages }, (_, i) => i + 1)
+          .map(num => `
+            <button class="${currentPage === num ? 'active' : ''}" onclick="changePage(${num})">
+              ${num}
+            </button>
+          `).join('')}
+        <button ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+          Next
+        </button>
+      `;
+      
+      const existingPagination = document.querySelector('.pagination');
+      if (existingPagination) {
+        existingPagination.remove();
+      }
+      
+      const itemList = document.getElementById("item-list");
+      itemList.after(pagination);
+    }
+
+    // Function to increment views
+    async function incrementViews(itemKey, event) {
+      event.preventDefault();
+      const itemRef = ref(db, `marketplaceItems/${itemKey}`);
+      await update(itemRef, {
+        views: increment(0)
+      });
+      window.location.href = `item.html?id=${itemKey}`;
+    }
+
+    // Initialize event listeners and setup
+    function initialize() {
+      // Menu toggle
+      const menuIcon = document.querySelector('.menu-icon');
+      const navMenu = document.querySelector('.nav-menu');
+      
+      menuIcon.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!navMenu.contains(event.target) && !menuIcon.contains(event.target)) {
+          navMenu.classList.remove('active');
+        }
+      });
+
+      // Check authentication
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          fetchProfilePicture(user.uid);
+        } else {
+          window.location.href = 'login.html';
+        }
+      });
+
+      // Initialize cart count
+      const cartCount = parseInt(localStorage.getItem('cartCount')) || 0;
+      document.querySelector('.cart-count').textContent = cartCount;
+
+      // Fetch and display items
+      const itemsRef = ref(db, "marketplaceItems");
+      onValue(itemsRef, (snapshot) => {
+        const items = snapshot.val();
+        if (items) {
+          allItems = Object.entries(items);
+          displayItems(allItems, currentPage);
+        }
+      });
+
+      // Initialize most viewed items
+      fetchMostViewedItems();
+    }
+
+    // Add global functions to window object
+    window.changePage = (page) => {
+      currentPage = page;
+      displayItems(allItems, currentPage);
+    };
+
+    window.handleItemClick = incrementViews;
+
+    // Update the addToCart function in the marketplace page
+window.addToCart = (itemKey, event) => {
+  event.stopPropagation();
+  
+  // Get the current cart items
+  let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+  let cartCount = parseInt(localStorage.getItem('cartCount')) || 0;
+  
+  // Get the item's details
+  const itemsRef = ref(db, `marketplaceItems/${itemKey}`);
+  get(itemsRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      const item = snapshot.val();
+      
+      // Create cart item object
+      const cartItem = {
+        id: itemKey,
+        name: item.name,
+        price: item.price,
+        image: item.images[0], // Assuming first image is main image
+        addedAt: new Date().toISOString()
+      };
+      
+      // Add item to cart
+      cartItems.push(cartItem);
+      cartCount++;
+      
+      // Update localStorage
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      localStorage.setItem('cartCount', cartCount);
+      
+      // Update cart count display
+      document.querySelector('.cart-count').textContent = cartCount;
+      
+      // Show confirmation
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #10B981;
+        color: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+      `;
+      toast.innerHTML = `✓ ${item.name} added to cart`;
+      document.body.appendChild(toast);
+      
+      // Remove toast after 3 seconds
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+  });
+};
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initialize);
+</script>
+</body>
+</html>

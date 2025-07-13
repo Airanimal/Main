@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color:#f4f4f4cc;
+            animation:change-color 1s;
+            background-repeat: no-repeat;
+            background-image: url('three.png'); /* Background image */
+            background-size: auto; /* Cover the entire background */
+            background-position: center; /* Center the background */
+        }
+    @keyframes change-color {
+0% {
+background-color: #f4f4f4cc;
+}
+100% {
+background-color:#3568a7; /* new background color */
+}
+}
+        .header {
+            text-align: center;
+            padding: 10px;
+            background-color: #3568a7;       
+            overflow: hidden;
+            padding-top:30px;
+            color:#fff;
+        }
+        .header span {
+            opacity: 0;
+            display: inline-block;
+            transform: translateY(20px);
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column; /* Change to column layout */
+        }
+        .login-container {
+            width: 300px;
+            padding: 20px;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+            border-radius: 21px;         
+            backdrop-filter: blur(1px); /* Apply blur effect */
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInContainer 1s ease forwards 1s;
+        }
+        .login-container:hover {
+            transform: scale(1.02);
+        }
+        .login-container h2 {
+            color: #1f375d;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            position: relative;
+            margin: 10px 0;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px 40px 10px 10px; /* Adjust padding for right-side icon */
+            border-radius: 15px;
+            border: 1px solid #b0bec5;
+        }
+        .input-group .icon {
+            position: absolute;
+            top: 50%;
+            right: 10px; /* Position icon on the right side */
+            transform: translateY(-50%);
+            color: #3568a7;
+            font-size: 18px;
+        }
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3568a7;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .login-button:hover {
+            background-color: #1f375d;
+            transform: scale(1.05);
+        }
+        .links {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .links a {
+            color: #1f375d;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #3568a7;
+        }
+
+        /* Crash animation */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+        
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+        }
+
+        /* Fade in header animation */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Fade in login container animation */
+        @keyframes fadeInContainer {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation classes */
+        .crash {
+            animation: shake 0.5s ease, slideOut 0.5s ease 0.5s forwards;
+        }
+    </style>
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header" id="header">
+        <!-- Splitting header words for staggered animation -->
+        <h1>
+            <span>Air</span> 
+            <span>Animal</span> 
+        </h1>
+    </div>
+    <div class="main-content">
+        <div class="login-container" id="login-container">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="input-group">
+        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                    <span class="icon"><i class="fas fa-user"></i></span>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    <span class="icon"><i class="fas fa-lock"></i></span>
+                </div>
+                <button type="submit" class="login-button">Login</button>
+                <div class="error-message" id="error-message"></div>
+            </form>
+            <div class="links">
+                <a href="signup.html" id="signUpLink">Sign Up</a> | 
+                <a href="forgot-password.html">Forgot Password?</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>© 2024 Air Animal Inc. All rights reserved.</p>
+    </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+    authDomain: "and-facebook-ab84c.firebaseapp.com",
+    databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+    projectId: "and-facebook-ab84c",
+    storageBucket: "and-facebook-ab84c.appspot.com",
+    messagingSenderId: "4885749329",
+    appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Handle login form submission
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("Login successful:", userCredential.user);
+      alert('Login successful!');
+      window.location.href = 'main.html'; // Redirect to dashboard
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      alert('Login failed: ' + error.message);
+    }
+  });
+</script>
+</body>
+</html>

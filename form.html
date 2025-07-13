@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    header {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        text-align: center;
+    }
+
+    nav a {
+        color: white;
+        margin: 0 15px;
+        text-decoration: none;
+    }
+
+    nav a:hover {
+        text-decoration: underline;
+    }
+
+    section {
+        padding: 20px;
+    }
+
+    form label, form input, form textarea, form select, form button {
+        display: block;
+        margin: 10px 0;
+        width: 100%;
+    }
+
+    input, textarea, select, button {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    #item-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .item-card {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 250px;
+    }
+
+    .item-card img {
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Online Marketplace</h1>
+    <nav>
+      <a href="#list-item">Sell an Item</a>
+      <a href="main.html">Browse Items</a>
+    </nav>
+  </header>
+
+  <section id="list-item">
+    <h2>Sell an Item</h2>
+    <form id="item-form">
+      <label for="item-name">Item Name:</label>
+      <input type="text" id="item-name" required>
+      
+      <label for="item-description">Description:</label>
+      <textarea id="item-description" required></textarea>
+      
+      <label for="item-price">Price ($):</label>
+      <input type="number" id="item-price" step="0.01" required>
+      
+      <label for="item-category">Category:</label>
+      <select id="item-category" required>
+        <option value="Dog">Dog</option>
+        <option value="Clothing">Clothing</option>
+        <option value="Home">Home</option>
+        <option value="Books">Books</option>
+      </select>
+      
+      <label for="item-image">Upload Images:</label>
+      <input type="file" id="item-image" accept="image/*" multiple required>
+      
+      <button type="submit">Submit Item</button>
+    </form>
+  </section>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+    authDomain: "and-facebook-ab84c.firebaseapp.com",
+    databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+    projectId: "and-facebook-ab84c",
+    storageBucket: "and-facebook-ab84c.appspot.com",
+    messagingSenderId: "4885749329",
+    appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Cloudinary Configuration
+  async function uploadImageToCloudinary(imageData, label) {
+    const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dbiecavmn/image/upload";
+    const formData = new FormData();
+
+    formData.append("file", imageData);
+    formData.append("upload_preset", "unsigned"); // Replace with your actual Cloudinary upload preset
+    formData.append("public_id", `${label}_${Date.now()}`); // Unique ID to avoid overwriting
+
+    try {
+      const response = await fetch(cloudinaryUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(`${label} uploaded to Cloudinary. URL: ${result.secure_url}`);
+        return result.secure_url;
+      } else {
+        console.error(`Error uploading ${label} to Cloudinary:`, response.statusText);
+        alert(`Failed to upload ${label}. Please try again.`);
+        return null;
+      }
+    } catch (error) {
+      console.error(`Error uploading ${label}:`, error);
+      alert(`Failed to upload ${label}. Please try again.`);
+      return null;
+    }
+  }
+
+  document.getElementById('item-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const itemName = document.getElementById('item-name').value;
+    const itemDescription = document.getElementById('item-description').value;
+    const itemPrice = document.getElementById('item-price').value;
+    const itemCategory = document.getElementById('item-category').value;
+    const itemImages = document.getElementById('item-image').files;
+
+    if (itemImages.length === 0) {
+      alert('Please upload at least one image.');
+      return;
+    }
+
+    const imageUrls = [];
+    for (const image of itemImages) {
+      const imageUrl = await uploadImageToCloudinary(image, "item_image");
+      if (imageUrl) {
+        imageUrls.push(imageUrl);
+      }
+    }
+
+    if (imageUrls.length > 0) {
+      // Save data to Firebase
+      const itemId = `item_${Date.now()}`;
+      set(ref(db, 'marketplaceItems/' + itemId), {
+        name: itemName,
+        description: itemDescription,
+        price: parseFloat(itemPrice).toFixed(2),
+        category: itemCategory,
+        images: imageUrls, // Array of image URLs
+      })
+      .then(() => {
+        alert('Item submitted successfully!');
+        document.getElementById('item-form').reset();
+      })
+      .catch((error) => {
+        console.error('Error saving item to Firebase:', error);
+        alert('Failed to submit item. Please try again.');
+      });
+    } else {
+      alert('Failed to upload images. Please try again.');
+    }
+  });
+</script>
+</body>
+</html>

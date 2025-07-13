@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Confirmation - Air Animal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .min-h-screen {
+            min-height: 100vh;
+            background-color: #f3f4f6;
+            padding: 3rem 1rem;
+        }
+
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(to right, #2563eb, #1d4ed8);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .merchant-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .merchant-info i {
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .check-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+            animation: bounce 1s infinite;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .details-box {
+            background-color: #eff6ff;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .details-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            align-items: center;
+            padding: 0.75rem;
+            background-color: white;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .details-label {
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .details-value {
+            color: #1f2937;
+            text-align: right;
+        }
+
+        .next-steps {
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .next-steps-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .button-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .button-secondary {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .button i {
+            margin-right: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 640px) {
+            .button-container {
+                flex-direction: column;
+            }
+            
+            .button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .details-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .details-value {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <div class="container">
+            <div class="card">
+                <div class="header">
+                    <div class="merchant-info">
+                        <i class="fas fa-paw"></i>
+                        <span style="font-size: 1.25rem; font-weight: bold;">Air Animal</span>
+                    </div>
+                    <div class="check-icon">
+                        <i class="fas fa-check-circle fa-4x"></i>
+                    </div>
+                    <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Payment Successful!</h1>
+                    <p style="color: #93c5fd;">Thank you for your purchase</p>
+                </div>
+
+                <div class="content">
+                    <div class="details-box">
+                        <h2 style="font-size: 1.25rem; font-weight: 600; color: #1e40af; margin-bottom: 1rem;">Payment Details</h2>
+                        <div id="orderDetails" class="details-grid">
+                            <!-- Order details will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="next-steps">
+                        <div class="next-steps-header">
+                            <i class="fas fa-info-circle" style="color: #2563eb; margin-right: 0.5rem;"></i>
+                            <h2 style="font-size: 1.25rem; font-weight: 600;">Next Steps</h2>
+                        </div>
+                        <p style="color: #4b5563;">
+                            A confirmation email has been sent to your registered email address with your payment details.
+                        </p>
+                    </div>
+
+                    <div class="button-container">
+                        <a href="delivery.html" class="button button-primary">
+                            <i class="fas fa-file-alt"></i>
+                            View Order form
+                        </a>
+                        <a href="order.html" class="button button-secondary">
+                            
+                            view payment history 
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+     // payment-confirmation.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+    authDomain: "and-facebook-ab84c.firebaseapp.com",
+    databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+    projectId: "and-facebook-ab84c",
+    storageBucket: "and-facebook-ab84c.appspot.com",
+    messagingSenderId: "4885749329",
+    appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+// Function to get cart data before clearing
+function getCartData() {
+    try {
+        const cart = localStorage.getItem('cart');
+        const cartItems = localStorage.getItem('cartItems');
+        const cartCount = localStorage.getItem('cartCount');
+        
+        return {
+            cart: cart ? JSON.parse(cart) : null,
+            cartItems: cartItems ? JSON.parse(cartItems) : [],
+            cartCount: parseInt(cartCount || '0')
+        };
+    } catch (error) {
+        console.error('Error getting cart data:', error);
+        return { cart: null, cartItems: [], cartCount: 0 };
+    }
+}
+
+// Function to clear cart data
+async function clearCartData() {
+    try {
+        localStorage.removeItem('cart');
+        localStorage.removeItem('cartItems');
+        localStorage.setItem('cartCount', '0');
+        
+        const user = auth.currentUser;
+        if (user) {
+            const cartRef = ref(db, `carts/${user.uid}`);
+            await remove(cartRef);
+        }
+        console.log('Cart cleared successfully');
+    } catch (error) {
+        console.error('Error clearing cart:', error);
+        throw error;
+    }
+}
+
+// Function to move marketplace items after payment
+async function moveMarketplaceItemsAfterPayment(userId, items) {
+    try {
+        const transferPromises = [];
+        
+        for (const item of items) {
+            if (item.id && item.id.startsWith('item_')) {
+                const marketplaceRef = ref(db, `marketplaceItems/${item.id}`);
+                const snapshot = await get(marketplaceRef);
+                
+                if (snapshot.exists()) {
+                    const itemData = snapshot.val();
+                    
+                    // Create entry in yourOrder
+                    const yourOrderRef = ref(db, `yourOrder/${userId}/${item.id}`);
+                    transferPromises.push(
+                        set(yourOrderRef, {
+                            ...itemData,
+                            transferredAt: Date.now(),
+                            status: 'Completed',
+                            paymentStatus: 'Paid'
+                        }).then(() => remove(marketplaceRef))
+                    );
+                }
+            }
+        }
+        
+        if (transferPromises.length > 0) {
+            await Promise.all(transferPromises);
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error moving marketplace items:', error);
+        throw error;
+    }
+}
+
+// Function to save order and process payment completion
+async function processOrderCompletion(orderData, paymentData) {
+    try {
+        const user = auth.currentUser;
+        if (!user) throw new Error('User not authenticated');
+
+        // Save payment record
+        const paymentRef = ref(db, `payments/${paymentData.id}`);
+        await set(paymentRef, {
+            ...paymentData,
+            userId: user.uid,
+            status: 'success',
+            timestamp: Date.now()
+        });
+
+        // Move marketplace items
+        if (orderData.cartItems && orderData.cartItems.length > 0) {
+            await moveMarketplaceItemsAfterPayment(user.uid, orderData.cartItems);
+        }
+
+        // Save order record
+        const orderRef = ref(db, `orders/${user.uid}/${orderData.orderNumber}`);
+        await set(orderRef, {
+            ...orderData,
+            userId: user.uid,
+            status: 'Completed',
+            paymentId: paymentData.id
+        });
+
+        // Clear cart after successful processing
+        await clearCartData();
+
+        return true;
+    } catch (error) {
+        console.error('Error processing order completion:', error);
+        throw error;
+    }
+}
+
+// Main confirmation page logic
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const cartData = getCartData();
+        const checkoutData = JSON.parse(sessionStorage.getItem('checkoutData') || '{}');
+        
+        // Get the most recent successful payment
+        const paymentsRef = ref(db, 'payments');
+        const snapshot = await get(paymentsRef);
+        let latestSuccessfulPayment = null;
+
+        if (snapshot.exists()) {
+            const payments = snapshot.val();
+            const paymentEntries = Object.entries(payments);
+            latestSuccessfulPayment = paymentEntries
+                .filter(([_, payment]) => payment.status === 'success')
+                .sort((a, b) => b[1].timestamp - a[1].timestamp)[0]?.[1];
+        }
+
+        if (!latestSuccessfulPayment) {
+            throw new Error('No successful payment found');
+        }
+
+        // Create order data
+        const orderTotal = checkoutData.total || 
+                          (cartData.cart && cartData.cart.total) || 
+                          latestSuccessfulPayment.amount || 
+                          0;
+        
+        const orderNumber = `ORD-${Date.now().toString().slice(-6)}`;
+        const date = new Date(latestSuccessfulPayment.timestamp).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const orderData = {
+            cartItems: checkoutData.cartItems || cartData.cartItems || [],
+            orderNumber,
+            orderDate: date,
+            total: orderTotal,
+            customerName: latestSuccessfulPayment.cardHolder,
+            paymentDetails: {
+                lastFourDigits: latestSuccessfulPayment.lastFourDigits,
+                paymentMethod: 'Credit Card'
+            }
+        };
+
+        // Process the order completion
+        await processOrderCompletion(orderData, latestSuccessfulPayment);
+
+        // Update the page with payment details
+        const orderDetails = document.getElementById('orderDetails');
+        orderDetails.innerHTML = `
+            <div class="details-row">
+                <span class="details-label">Order Number</span>
+                <span class="details-value">${orderNumber}</span>
+            </div>
+            <div class="details-row">
+                <span class="details-label">Customer Name</span>
+                <span class="details-value">${latestSuccessfulPayment.cardHolder || 'N/A'}</span>
+            </div>
+            <div class="details-row">
+                <span class="details-label">Card Number</span>
+                <span class="details-value">****-****-****-${latestSuccessfulPayment.lastFourDigits || 'XXXX'}</span>
+            </div>
+            <div class="details-row">
+                <span class="details-label">Amount Paid</span>
+                <span class="details-value">$${orderTotal.toFixed(2)}</span>
+            </div>
+            <div class="details-row">
+                <span class="details-label">Transaction ID</span>
+                <span class="details-value">${latestSuccessfulPayment.id || orderNumber}</span>
+            </div>
+            <div class="details-row">
+                <span class="details-label">Date & Time</span>
+                <span class="details-value">${date}</span>
+            </div>
+            <div class="details-row">
+                <span class="details-label">Payment Status</span>
+                <span class="details-value">
+                    <span class="status-badge">
+                        <i class="fas fa-check-circle" style="margin-right: 0.25rem;"></i>
+                        Successful
+                    </span>
+                </span>
+            </div>
+        `;
+
+        // Clear checkout data from sessionStorage
+        sessionStorage.removeItem('checkoutData');
+
+    } catch (error) {
+        console.error('Error displaying confirmation:', error);
+        document.getElementById('orderDetails').innerHTML = `
+            <div class="error-message">
+                <h2>Error Loading Order Details</h2>
+                <p>Please try refreshing the page or contact support if the problem persists.</p>
+                <p class="error-details">${error.message}</p>
+            </div>
+        `;
+    }
+});
+    </script>
+</body>
+</html>

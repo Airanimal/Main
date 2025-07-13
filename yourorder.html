@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordered Items | Digital Market</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+       :root {
+            --primary-color: #0066cc;
+            --secondary-color: #f3f4f6;
+            --text-color: #333;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --hover-color: #f9fafb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9fafb;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .item-image-container {
+            position: relative;
+            padding-top: 75%;
+            overflow: hidden;
+        }
+
+        .item-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            padding: 1rem;
+        }
+
+        .item-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .order-info {
+            padding: 0.75rem;
+            background-color: var(--secondary-color);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+
+        .purchase-date {
+            color: #666;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .filter-section {
+            margin-bottom: 2rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            background-color: white;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .filter-button:hover {
+            background-color: var(--hover-color);
+        }
+
+        .filter-button.active:hover {
+            background-color: var(--primary-color);
+            opacity: 0.9;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+            }
+
+            .filter-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="page-header">
+            <h1 class="page-title">My Ordered dogs</h1>
+            <div>
+                <span id="userEmail" class="user-info"></span>
+                <button class="filter-button" onclick="window.location.href='order.html'">
+                    <i class="fas fa-clock"></i> View Order History
+                </button>
+            </div>
+        </header>
+        
+        <main id="itemsGrid" class="items-grid">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Loading items...</p>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+      // Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+// Global variables
+let currentUser = null;
+let allItems = [];
+let currentFilter = 'all';
+
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+    authDomain: "and-facebook-ab84c.firebaseapp.com",
+    databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+    projectId: "and-facebook-ab84c",
+    storageBucket: "and-facebook-ab84c.appspot.com",
+    messagingSenderId: "4885749329",
+    appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+// Main initialization function
+function initializeOrderManagement() {
+    setupAuthObserver();
+    setupEventListeners();
+    setupErrorHandling();
+}
+
+// Authentication observer setup
+function setupAuthObserver() {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
+            updateUIWithUserInfo(user);
+            initializeOrderedItems();
+        } else {
+            redirectToLogin();
+        }
+    });
+}
+
+// UI update functions
+function updateUIWithUserInfo(user) {
+    const userEmailElement = document.getElementById('userEmail');
+    if (userEmailElement) {
+        userEmailElement.textContent = user.email;
+    }
+}
+
+function redirectToLogin() {
+    window.location.href = 'login.html';
+}
+
+// Order status determination
+function determineOrderStatus(orderDate) {
+    const now = new Date();
+    const diffTime = Math.abs(now - orderDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays <= 1) return 'processing';
+    if (diffDays <= 3) return 'shipped';
+    return 'delivered';
+}
+
+// Product fetching
+async function fetchProductDetails(productId) {
+    try {
+        const productRef = ref(db, `products/${productId}`);
+        const snapshot = await get(productRef);
+        
+        if (snapshot.exists()) {
+            return snapshot.val();
+        }
+        return null;
+    } catch (error) {
+        console.error(`Error fetching product details for ${productId}:`, error);
+        return null;
+    }
+}
+
+// Order fetching
+async function fetchOrderedItems() {
+    if (!currentUser) return [];
+
+    try {
+        const pendingCheckoutsRef = ref(db, 'pendingCheckouts');
+        const snapshot = await get(pendingCheckoutsRef);
+        let items = [];
+
+        if (snapshot.exists()) {
+            const pendingCheckouts = snapshot.val();
+            
+            const userCheckouts = Object.entries(pendingCheckouts).filter(([key]) => 
+                key.startsWith(currentUser.uid)
+            );
+
+            for (const [pendingCheckoutId, pendingCheckout] of userCheckouts) {
+                const timestamp = parseInt(pendingCheckoutId.split('_')[1]);
+                const orderDate = new Date(timestamp);
+                const status = determineOrderStatus(orderDate);
+
+                if (pendingCheckout.cartItems) {
+                    for (const [itemIndex, item] of Object.entries(pendingCheckout.cartItems)) {
+                        const price = typeof item.price === 'string' ? 
+                            parseFloat(item.price.replace(/[^0-9.-]+/g, '')) : 
+                            parseFloat(item.price) || 0;
+
+                        items.push({
+                            id: item.id || itemIndex,
+                            orderId: pendingCheckoutId,
+                            name: item.name || 'Unknown Item',
+                            image: item.image || '',
+                            price: price,
+                            quantity: item.quantity || 1,
+                            orderDate: orderDate,
+                            status: status,
+                            orderNumber: `ORD-${timestamp.toString().slice(-6)}`,
+                            addedAt: item.addedAt || timestamp
+                        });
+                    }
+                }
+            }
+        }
+
+        return items;
+    } catch (error) {
+        console.error('Error fetching ordered items:', error);
+        return [];
+    }
+}
+// UI Creation
+function createItemCard(item) {
+    const formattedPrice = formatPrice(item.price);
+    
+    return `
+        <div class="item-card">
+            <div class="item-image-container">
+                <img src="${item.image || '/placeholder-image.jpg'}" 
+                     alt="${item.name}" 
+                     class="item-image"
+                     onerror="this.src='/placeholder-image.jpg'">
+            </div>
+            <div class="item-details">
+                <h3 class="item-name">${item.name}</h3>
+                <div class="item-meta">
+                    <span>$${formattedPrice}</span>
+                    <span>Qty: ${item.quantity || 1}</span>
+                </div>
+            </div>
+            <div class="order-info">
+                <div class="purchase-date">
+                    Ordered: ${item.orderDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    })}
+                </div>
+                <div class="order-meta">
+                    <span class="status-badge ${item.status}">${item.status}</span>
+                    <small class="order-number">Order #${item.orderNumber}</small>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Utility functions
+function formatPrice(price) {
+    if (typeof price === 'string') {
+        price = price.replace(/[^0-9.-]+/g, '');
+    }
+    const numPrice = parseFloat(price);
+    return isNaN(numPrice) ? '0.00' : numPrice.toFixed(2);
+}
+
+// Display functions
+function displayItems(items) {
+    const container = document.getElementById('itemsGrid');
+    
+    if (!items || !items.length) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <h2>No Orders Found</h2>
+                <p>No orders match the selected filter criteria</p>
+            </div>
+        `;
+        return;
+    }
+
+    try {
+        container.innerHTML = items.map(item => {
+            try {
+                return createItemCard(item);
+            } catch (error) {
+                console.error('Error creating card for item:', item, error);
+                return ''; // Skip problematic items
+            }
+        }).join('');
+    } catch (error) {
+        handleError(error, 'Error displaying items');
+    }
+}
+
+// Filter functions
+function filterItems(filter) {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    try {
+        let filteredItems = allItems;
+        
+        switch (filter) {
+            case 'recent':
+                filteredItems = allItems.filter(item => {
+                    const itemDate = item.orderDate instanceof Date ? 
+                        item.orderDate : new Date(item.orderDate);
+                    return itemDate > thirtyDaysAgo;
+                });
+                break;
+            case 'delivered':
+                filteredItems = allItems.filter(item => item.status === 'delivered');
+                break;
+            case 'processing':
+                filteredItems = allItems.filter(item => item.status === 'processing');
+                break;
+            case 'shipped':
+                filteredItems = allItems.filter(item => item.status === 'shipped');
+                break;
+        }
+
+        return filteredItems;
+    } catch (error) {
+        console.error('Error filtering items:', error);
+        return allItems;
+    }
+}
+
+// Initialization functions
+async function initializeOrderedItems() {
+    try {
+        allItems = await fetchOrderedItems();
+        allItems.sort((a, b) => b.orderDate - a.orderDate);
+        displayItems(allItems);
+    } catch (error) {
+        console.error('Error initializing page:', error);
+        displayItems([]);
+    }
+}
+
+// Event listeners
+function setupEventListeners() {
+    document.querySelectorAll('.filter-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            document.querySelectorAll('.filter-button').forEach(btn => 
+                btn.classList.remove('active')
+            );
+            e.target.classList.add('active');
+            
+            currentFilter = e.target.dataset.filter;
+            const filteredItems = filterItems(currentFilter);
+            displayItems(filteredItems);
+        });
+    });
+
+    // Add global error event listener
+    window.addEventListener('error', (event) => {
+        handleError(event.error, 'An unexpected error occurred');
+    });
+}
+
+// Error handling
+function setupErrorHandling() {
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+        console.error('Global error:', { msg, url, lineNo, columnNo, error });
+        handleError(error, 'An unexpected error occurred');
+        return false;
+    };
+}
+
+function handleError(error, message) {
+    console.error(message, error);
+    const container = document.getElementById('itemsGrid');
+    if (container) {
+        container.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-circle"></i>
+                <h2>Error</h2>
+                <p>${message}</p>
+                <button onclick="window.location.reload()" class="retry-button">
+                    Retry
+                </button>
+            </div>
+        `;
+    }
+}
+
+// Initialize the application when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeOrderManagement);
+    </script>
+</body>
+</html>

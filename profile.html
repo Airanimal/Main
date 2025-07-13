@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f4f4f4cc;
+      animation: change-color 1s;
+      background-repeat: no-repeat;
+      background-image: url('three.png');
+      background-size: auto;
+      background-position: center;
+    }
+
+    @keyframes change-color {
+      0% { background-color: #f4f4f4cc; }
+      100% { background-color: #3568a7; }
+    }
+
+    .profile-container {
+      max-width: 400px;
+      margin: auto;
+      border-radius: 21px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+      backdrop-filter: blur(1px);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInContainer 1s ease forwards 1s;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #3568a7;
+      color: #fff;
+      border-radius: 15px;
+    }
+
+    .back-arrow {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .back-arrow svg {
+      fill: #fff;
+      width: 24px;
+      height: 24px;
+    }
+
+    .header-text {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .profile-image-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 16px;
+    }
+
+    .profile-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #f0f0f0;
+      cursor: pointer;
+      transition: filter 0.3s ease;
+    }
+
+    .profile-image:hover {
+      filter: brightness(0.9);
+    }
+
+    .profile-image-edit {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: #3568a7;
+      border-radius: 50%;
+      padding: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .profile-image-edit:hover {
+      background-color: #2b4d82;
+    }
+
+    .profile-image-edit svg {
+      fill: #fff;
+      width: 16px;
+      height: 16px;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .loading-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 30px;
+      height: 30px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid var(--whatsapp-green);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .error-message {
+      color: #ff4444;
+      font-size: 12px;
+      text-align: center;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .info-item {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 15px;
+      margin-bottom: 10px;
+      transition: transform 0.3s;
+    }
+
+    .info-item:hover {
+      transform: scale(1.02);
+    }
+
+    .info-label {
+      font-size: 14px;
+      color: #3568a7;
+      font-weight: 600;
+    }
+
+    .info-value {
+      font-size: 16px;
+      color: #1f375d;
+      margin: 8px 0;
+    }
+
+    .edit-icon {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .edit-icon svg {
+      fill: #3568a7;
+      width: 20px;
+      height: 20px;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: white;
+      padding: 24px;
+      border-radius: 21px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      color: #3568a7;
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 15px;
+      border: 1px solid #b0bec5;
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+
+    .modal-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .save-button {
+      background-color: #3568a7;
+      color: white;
+    }
+
+    .save-button:hover {
+      background-color: #1f375d;
+      transform: scale(1.05);
+    }
+
+    .cancel-button {
+      background-color: #f4f4f4;
+      color: #1f375d;
+    }
+
+    .cancel-button:hover {
+      background-color: #e0e0e0;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeInContainer {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .error-message {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <!-- Header -->
+    
+    
+    <div class="header">
+      <span class="back-arrow">
+        <svg viewBox="0 0 24 24">
+          <path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z"/>
+        </svg>
+      </span>
+      <span class="header-text">Profile</span>
+    </div>
+    <div class="profile-image-container">
+      <img src="pn.png" alt="Profile" class="profile-image" id="profileImage">
+      <div class="loading-spinner" id="loadingSpinner"></div>
+      <label for="profileImageInput" class="profile-image-edit">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.015 1.015 0 0 0 0-1.41l-2.34-2.34a1.015 1.015 0 0 0-1.41 0L15.13 4.96l3.75 3.75 1.83-1.67z"/>
+        </svg>
+      </label>
+      <input type="file" id="profileImageInput" class="file-input" accept="image/*">
+    </div>
+    <div class="error-message" id="errorMessage"></div>
+
+   <div class="profile-details">
+      <div class="profile-info">
+        <div class="info-item">
+          <div class="info-container">
+            <span class="info-label">Name</span>
+            <span class="edit-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.015 1.015 0 0 0 0-1.41l-2.34-2.34a1.015 1.015 0 0 0-1.41 0L15.13 4.96l3.75 3.75 1.83-1.67z"/>
+              </svg>
+            </span>
+          </div>
+          <div class="info-value">your name</div>
+          <div class="info-description">This is not your username or pin. This name will be visible in your profile contacts.</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-container">
+            <span class="info-label">About</span>
+            <span class="edit-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.015 1.015 0 0 0 0-1.41l-2.34-2.34a1.015 1.015 0 0 0-1.41 0L15.13 4.96l3.75 3.75 1.83-1.67z"/>
+              </svg>
+            </span>
+          </div>
+          <div class="info-value">Hey there! tell us about yourself.</div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-container">
+            <span class="info-label">Phone</span>
+            <span class="edit-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.015 1.015 0 0 0 0-1.41l-2.34-2.34a1.015 1.015 0 0 0-1.41 0L15.13 4.96l3.75 3.75 1.83-1.67z"/>
+              </svg>
+            </span>
+          </div>
+          <div class="info-value">+</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-container">
+            <span class="info-label">Gmail</span>
+            <span class="edit-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.015 1.015 0 0 0 0-1.41l-2.34-2.34a1.015 1.015 0 0 0-1.41 0L15.13 4.96l3.75 3.75 1.83-1.67z"/>
+              </svg>
+            </span>
+          </div>
+          <div class="info-value">example@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Edit Modal -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <h2 class="modal-title" id="modalTitle">Edit Field</h2>
+      <input type="text" class="modal-input" id="editInput">
+      <div class="modal-buttons">
+        <button class="modal-button cancel-button" id="cancelEdit">Cancel</button>
+        <button class="modal-button save-button" id="saveEdit">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
+import { getDatabase, ref as dbRef, get, set, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCcTFYAIp1-TA1irU8l5N8iihfnYCGWrHw",
+  authDomain: "and-facebook-ab84c.firebaseapp.com",
+  databaseURL: "https://and-facebook-ab84c-default-rtdb.firebaseio.com",
+  projectId: "and-facebook-ab84c",
+  storageBucket: "and-facebook-ab84c.appspot.com",
+  messagingSenderId: "4885749329",
+  appId: "1:4885749329:web:2d5b0e46519b5dc4c8e270"
+};
+
+// Cloudinary configuration
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dbiecavmn/image/upload";
+const CLOUDINARY_UPLOAD_PRESET = "Unsigned"; // Replace with your upload preset if different
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
+const db = getDatabase(app);
+const auth = getAuth(app);
+let currentUser = null;
+
+// Profile fields configuration
+const profileFields = [
+  {
+    id: 'name',
+    label: 'Name',
+    description: 'This is not your username or pin. This name will be visible to Air animal for contact.',
+    defaultValue: 'your name'
+  },
+  {
+    id: 'about',
+    label: 'About',
+    defaultValue: 'Tell us more about yourself.'
+  },
+  {
+    id: 'phone',
+    label: 'Phone',
+    defaultValue: '+'
+  },
+  {
+    id: 'email',
+    label: 'Gmail',
+    defaultValue: 'example@gmail.com'
+  }
+];
+
+// DOM Elements
+const profileImage = document.getElementById('profileImage');
+const profileImageInput = document.getElementById('profileImageInput');
+const loadingSpinner = document.getElementById('loadingSpinner');
+const errorMessage = document.getElementById('errorMessage');
+const editModal = document.getElementById('editModal');
+const modalTitle = document.getElementById('modalTitle');
+const editInput = document.getElementById('editInput');
+const cancelEdit = document.getElementById('cancelEdit');
+const saveEdit = document.getElementById('saveEdit');
+
+// Create and append image preview modal
+const imagePreviewModal = document.createElement('div');
+imagePreviewModal.innerHTML = `
+  <div id="fullImageModal" class="modal" style="background: rgba(0, 0, 0, 0.9); z-index: 1001;">
+    <div class="modal-content" style="background: none; max-width: none; padding: 0; box-shadow: none;">
+      <img id="fullImage" style="max-width: 90vw; max-height: 90vh; object-fit: contain;" />
+      <button class="modal-button save-button" style="position: absolute; top: 20px; right: 20px;">Close</button>
+    </div>
+  </div>
+`;
+document.body.appendChild(imagePreviewModal);
+
+const fullImageModal = document.getElementById('fullImageModal');
+const fullImage = document.getElementById('fullImage');
+
+// Initialize profile fields
+function initializeProfileFields() {
+  const profileInfo = document.querySelector('.profile-info');
+  profileInfo.innerHTML = profileFields.map(field => `
+    <div class="info-item" data-field="${field.id}">
+      <div class="info-container">
+        <span class="info-label">${field.label}</span>
+        <span class="edit-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.015 1.015 0 0 0 0-1.41l-2.34-2.34a1.015 1.015 0 0 0-1.41 0L15.13 4.96l3.75 3.75 1.83-1.67z"/>
+          </svg>
+        </span>
+      </div>
+      <div class="info-value">${field.defaultValue}</div>
+      ${field.description ? `<div class="info-description">${field.description}</div>` : ''}
+    </div>
+  `).join('');
+
+  // Add click handlers for edit icons
+  document.querySelectorAll('.edit-icon').forEach(icon => {
+    icon.addEventListener('click', (e) => {
+      const fieldItem = e.target.closest('.info-item');
+      const fieldId = fieldItem.dataset.field;
+      const field = profileFields.find(f => f.id === fieldId);
+      const currentValue = fieldItem.querySelector('.info-value').textContent;
+      
+      modalTitle.textContent = `Edit ${field.label}`;
+      editInput.value = currentValue;
+      editModal.style.display = 'flex';
+      
+      editModal.dataset.fieldId = fieldId;
+    });
+  });
+}
+
+// Upload to Cloudinary
+async function uploadToCloudinary(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('Unsigned', CLOUDINARY_UPLOAD_PRESET);
+
+  const response = await fetch(CLOUDINARY_URL, {
+    method: 'POST',
+    body: formData
+  });
+
+  if (!response.ok) {
+    throw new Error('Cloudinary upload failed');
+  }
+
+  const data = await response.json();
+  return data.secure_url;
+}
+
+// Load user profile data
+async function loadUserProfile(userId) {
+  try {
+    const userRef = dbRef(db, `users/${userId}`);
+    const snapshot = await get(userRef);
+    
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      if (userData.profilePicture) {
+        profileImage.src = userData.profilePicture;
+      }
+      
+      profileFields.forEach(field => {
+        const value = userData[field.id] || field.defaultValue;
+        updateProfileField(field.id, value);
+      });
+    }
+  } catch (error) {
+    console.error('Error loading profile:', error);
+    showError('Failed to load profile data');
+  }
+}
+
+// Update profile field in UI
+function updateProfileField(fieldId, value) {
+  const fieldElement = document.querySelector(`[data-field="${fieldId}"] .info-value`);
+  if (fieldElement) {
+    fieldElement.textContent = value;
+  }
+}
+
+// Handle profile image upload
+profileImageInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    showError('Please select an image file');
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    showError('Image size should be less than 5MB');
+    return;
+  }
+
+  if (!currentUser) {
+    showError('Please sign in to upload profile picture');
+    return;
+  }
+
+  try {
+    showLoading(true);
+    hideError();
+
+    // Create temporary preview
+    const tempUrl = URL.createObjectURL(file);
+    profileImage.src = tempUrl;
+
+    // Upload to both Cloudinary and Firebase
+    const [cloudinaryUrl, firebaseUrl] = await Promise.all([
+      uploadToCloudinary(file),
+      (async () => {
+        const imageRef = storageRef(storage, `profile-pictures/${currentUser.uid}/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(imageRef, file);
+        return getDownloadURL(snapshot.ref);
+      })()
+    ]);
+    
+    // Update database with both URLs
+    await update(dbRef(db, `users/${currentUser.uid}`), {
+      profilePicture: cloudinaryUrl,
+      profilePictureFirebase: firebaseUrl,
+      updatedAt: Date.now()
+    });
+
+    profileImage.src = cloudinaryUrl;
+    URL.revokeObjectURL(tempUrl);
+  } catch (error) {
+    console.error('Error uploading profile picture:', error);
+    showError('Failed to upload profile picture');
+    profileImage.src = '/api/placeholder/100/100';
+  } finally {
+    showLoading(false);
+  }
+});
+
+// Utility functions
+function showLoading(show) {
+  loadingSpinner.style.display = show ? 'block' : 'none';
+  profileImage.style.opacity = show ? '0.5' : '1';
+}
+
+function showError(message) {
+  errorMessage.textContent = message;
+  errorMessage.style.display = 'block';
+  setTimeout(() => {
+    errorMessage.style.display = 'none';
+  }, 3000);
+}
+
+function hideError() {
+  errorMessage.style.display = 'none';
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', initializeProfileFields);
+
+// Profile image click handler for full-screen preview
+profileImage.addEventListener('click', () => {
+  fullImage.src = profileImage.src;
+  fullImageModal.style.display = 'flex';
+});
+
+// Close full-screen preview
+fullImageModal.querySelector('button').addEventListener('click', () => {
+  fullImageModal.style.display = 'none';
+});
+
+// Authentication check
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUser = user;
+    loadUserProfile(user.uid);
+  } else {
+    window.location.href = 'login.html';
+  }
+});
+
+// Handle image load error
+profileImage.addEventListener('error', () => {
+  profileImage.src = 'pn.png';
+});
+
+// Handle back button
+document.querySelector('.back-arrow').addEventListener('click', () => {
+  window.history.back();
+});
+
+// Modal event handlers
+cancelEdit.addEventListener('click', () => {
+  editModal.style.display = 'none';
+});
+
+saveEdit.addEventListener('click', async () => {
+  const fieldId = editModal.dataset.fieldId;
+  const newValue = editInput.value.trim();
+  
+  if (!currentUser) {
+    showError('Please sign in to update profile');
+    return;
+  }
+
+  try {
+    await update(dbRef(db, `users/${currentUser.uid}`), {
+      [fieldId]: newValue,
+      updatedAt: Date.now()
+    });
+    
+    updateProfileField(fieldId, newValue);
+    editModal.style.display = 'none';
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    showError('Failed to update profile');
+  }
+});
+
+// Handle modal close on outside click
+editModal.addEventListener('click', (e) => {
+  if (e.target === editModal) {
+    editModal.style.display = 'none';
+  }
+});
+
+fullImageModal.addEventListener('click', (e) => {
+  if (e.target === fullImageModal) {
+    fullImageModal.style.display = 'none';
+  }
+});
+
+// Handle escape key to close modals
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    editModal.style.display = 'none';
+    fullImageModal.style.display = 'none';
+  }
+});
+</script>
+</body>
+</html>
